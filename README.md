@@ -15,7 +15,7 @@ This is a simple TODO application built with React and Redux. It allows users to
 
 1. Clone the repository:
     ```
-    git clone https://github.com/yourusername/todo-app.git
+    git clone https://github.com/kundan761/TODO.git
     ```
 
 2. Navigate into the project directory:
@@ -37,11 +37,43 @@ This is a simple TODO application built with React and Redux. It allows users to
     ```
     npm run server
     ```
+6. Deployed Link:
+   ```
+   https://todo-9muzvvbpp-kundan-kumar-surajs-projects.vercel.app/
+   ```
+## Folder Structure:
+  ```
+├── public/
+│   ├── favicon.ico
+├── src/
+│   ├── components/
+│   │   ├── AddTodo.jsx
+│   │   ├── TodoList.jsx
+│   │   ├── Filter.jsx
+│   │   ├── TodoItem.jsx
+│   ├── assets/
+│   │   └── background.avif
+│   │   └── react.svg
+│   ├── Redux/
+│   │   ├── action.js
+│   │   ├── darkMode.js
+│   │   ├── filter.reducer.js
+│   │   ├── reducers.js
+│   │   ├── store.js
+│   ├── App.jsx
+│   ├── url.js
+│   ├── App.css
+│   ├── main.jsx
+│   ├── index.css
+├── .eslintric.cjs
+├── .gitignore
+├── db.json
+├── index.html
+├── package.json
+├── vite.config.js
+└── README.md
 
-Now, you should be able to see the application running at [Deployed link](https://localhost:5173)`.
-And, your server is running at [Json-Server](https://localhost:3000/todos)
-
-
+  ```
 ## Usage
 
 To use the application, simply type your task into the input field and click "Add". Your task will appear in the list below. You can mark tasks as completed, edit their titles, or delete them using the buttons next to each task.
