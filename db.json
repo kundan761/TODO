@@ -1,0 +1,19 @@
+{
+  "todos": [
+    {
+      "id": "1714766137143",
+      "title": "JavaScript",
+      "completed": true
+    },
+    {
+      "id": "1714766141429",
+      "title": "Java",
+      "completed": true
+    },
+    {
+      "id": "1714766144332",
+      "title": "React",
+      "completed": false
+    }
+  ]
+}

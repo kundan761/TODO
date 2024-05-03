@@ -1,0 +1,32 @@
+#root {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 5rem;
+  text-align: center;
+  background-image: url("");
+}
+
+
+:root {
+  --background-color: whitesmoke;
+  --text-color: black;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.dark {
+  --background-color: black;
+  --text-color: white;
+}
+
+
+.Firstcontainer{
+  width: 50%;
+  display: flex;
+  align-items: center;
+  gap: 50%;
+  margin: auto;
+}
