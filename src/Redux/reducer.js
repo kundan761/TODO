@@ -7,6 +7,7 @@ import {
   EDIT_TODO,
   CLEAR_COMPLETED,
 } from "./action";
+import { v4 as uuidv4 } from 'uuid';
 
 const initialState = [];
 
@@ -15,13 +16,11 @@ function todos(state = initialState, action) {
     case ADD_TODO:
       return [
         ...state,
-        { id: Date.now(), title: action.title, completed: false },
+        { id: uuidv4(), title: action.title, completed: false },
       ];
     case TOGGLE_TODO:
-      // return state.map(todo => todo.id === action.id ? { ...todo, completed: action.completed } : todo);
       return state.map((todo) => {
         if (todo.id === action.id) {
-          // Toggle completed field
           return { ...todo, completed: !todo.completed };
         }
         return todo;
@@ -44,3 +43,5 @@ function todos(state = initialState, action) {
 }
 
 export default todos;
+
+// reducer for all part except darkmode and filter
