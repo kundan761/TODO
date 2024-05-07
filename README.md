@@ -39,7 +39,7 @@ This is a simple TODO application built with React and Redux. It allows users to
     ```
 6. Deployed Link:
    ```
-   https://todo-9muzvvbpp-kundan-kumar-surajs-projects.vercel.app/
+   https://todo-snowy-two.vercel.app/
    ```
 ## Folder Structure:
   ```
