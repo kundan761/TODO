@@ -78,6 +78,10 @@ This is a simple TODO application built with React and Redux. It allows users to
 
 To use the application, simply type your task into the input field and click "Add". Your task will appear in the list below. You can mark tasks as completed, edit their titles, or delete them using the buttons next to each task.
 
+## HomePage
+
+![Screenshot](src/assets/Screenshot%202024-05-08%20020947.png)
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
