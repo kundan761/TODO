@@ -1,5 +1,6 @@
-/* eslint-disable no-unused-vars */
-import {url} from "../url"
+import axios from 'axios';
+import { url } from '../url';
+import { v4 as uuidv4 } from 'uuid';
 
 export const ADD_TODO = 'ADD_TODO';
 export const TOGGLE_TODO = 'TOGGLE_TODO';
@@ -9,135 +10,111 @@ export const SET_TODOS = 'SET_TODOS';
 export const EDIT_TODO = 'EDIT_TODO';
 export const CLEAR_COMPLETED = 'CLEAR_COMPLETED';
 
-
-// Action CREATORS
-
-export const addTodo = title => async dispatch => {
-  const todo = { id: Date.now(), title, completed: false };
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(todo)
-  });
-  // eslint-disable-next-line no-unused-vars
-  const data = await response.json();
-  dispatch({ type: ADD_TODO, title });
-};
-
-// export const toggleTodo = id => ({ type: TOGGLE_TODO, id });
-export const toggleTodo = (id, completed) => async dispatch => {
-  const response = await fetch(`${url}/${id}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ completed: !completed })
-  });
-  const data = await response.json();
-  dispatch({ type: TOGGLE_TODO, id, completed: !completed });
-};
-
-
-
-export const deleteTodo = id => async dispatch => {
-  await fetch(`${url}/${id}`, {
-    method: 'DELETE'
-  });
-  dispatch({ type: DELETE_TODO, id });
-};
-
+// Action Creators
 export const setTodos = todos => ({ type: SET_TODOS, todos });
 
 
-export const editTodo = (id, title) => async dispatch => {
-  const response = await fetch(`${url}/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ title })
-  });
-  const data = await response.json();
-  dispatch({ type: EDIT_TODO, id, title: data.title });
-};
-
-
-export const clearCompleted = () => async (dispatch, getState) => {
-  const { todos } = getState();
-  const completedTodos = todos.filter(todo => todo.completed);
-
-  await Promise.all(completedTodos.map(todo =>
-    fetch(`${url}/${todo.id}`, {
-      method: 'DELETE'
-    })
-  ));
-
-  dispatch({ type: CLEAR_COMPLETED });
-};
-
-
-export const getTodos = (query = '') => async dispatch => {
-  const Url = query ? `${url}?${query}` : url;
-  const response = await fetch(Url);
-  const todos = await response.json();
-  if (Array.isArray(todos)) {
-    dispatch(setTodos(todos));
-  } else {
-    console.error('No todos received from API');
+export const getTodos = (query = '') => async (dispatch) => {
+  try {
+    const Url = query ? `${url}?${query}` : url;
+    const response = await axios.get(Url);
+    dispatch(setTodos(response.data));
+  } catch (error) {
+    console.error('Error fetching todos:', error);
   }
 };
 
+export const addTodo = (title) => async (dispatch) => {
+  try {
+    const todo = { id: uuidv4(), title, completed: false };
+    await axios.post(url, todo);
+    dispatch({ type: ADD_TODO, title });
+    dispatch(getTodos());
+  } catch (error) {
+    console.error('Error adding todo:', error);
+  }
+};
 
+export const toggleTodo = (id, completed) => async (dispatch) => {
+  try {
+    await axios.patch(`${url}/${id}`, { completed: !completed });
+    dispatch(getTodos());
+    dispatch({ type: TOGGLE_TODO, id, completed: !completed });
+  } catch (error) {
+    console.error('Error toggling todo:', error);
+  }
+};
 
-//filter
+export const editTodo = (id, title) => async (dispatch) => {
+  try {
+    await axios.put(`${url}/${id}`, { title });
+    dispatch({ type: EDIT_TODO, id, title });
+  } catch (error) {
+    console.error('Error editing todo:', error);
+  }
+};
+
+export const deleteTodo = (id) => async (dispatch) => {
+  try {
+    await axios.delete(`${url}/${id}`);
+    dispatch({ type: DELETE_TODO, id });
+    dispatch(getTodos()); // Fetch updated todos after deletion
+  } catch (error) {
+    console.error('Error deleting todo:', error);
+  }
+};
+
+export const clearCompleted = () => async (dispatch, getState) => {
+  try {
+    const { todos } = getState();
+    const completedTodos = todos.filter((todo) => todo.completed);
+    await Promise.all(
+      completedTodos.map((todo) => axios.delete(`${url}/${todo.id}`))
+    );
+    dispatch({ type: CLEAR_COMPLETED });
+  } catch (error) {
+    console.error('Error clearing completed todos:', error);
+  }
+};
+
+// Filter actions...
 export const SET_FILTER = 'SET_FILTER';
 export const FETCH_ALL_TODOS = 'FETCH_ALL_TODOS';
 export const FETCH_ACTIVE_TODOS = 'FETCH_ACTIVE_TODOS';
 export const FETCH_COMPLETED_TODOS = 'FETCH_COMPLETED_TODOS';
 
-export const setFilter = filter => ({ type: SET_FILTER, filter });
-// export const fetchAllTodos = () => ({ type: FETCH_ALL_TODOS });
-export const fetchAllTodos = () => async dispatch => {
+export const setFilter = (filter) => ({ type: SET_FILTER, filter });
+
+export const fetchAllTodos = () => async (dispatch) => {
   try {
-    const response = await fetch(url);
-    const todos = await response.json();
-    dispatch({ type: SET_TODOS, todos });
+    const response = await axios.get(url);
+    dispatch({ type: SET_TODOS, todos: response.data });
   } catch (error) {
-    console.error("Error fetching all todos:", error);
+    console.error('Error fetching all todos:', error);
   }
 };
 
-
-// export const fetchActiveTodos = () => ({ type: FETCH_ACTIVE_TODOS });
-export const fetchActiveTodos = () => async dispatch => {
+export const fetchActiveTodos = () => async (dispatch) => {
   try {
-    const response = await fetch(`${url}`);
-    const todos = await response.json();
-    const activeTodos = todos.filter(todo => !todo.completed);
+    const response = await axios.get(url);
+    const activeTodos = response.data.filter((todo) => !todo.completed);
     dispatch({ type: SET_TODOS, todos: activeTodos });
   } catch (error) {
-    console.error("Error fetching active todos:", error);
+    console.error('Error fetching active todos:', error);
   }
 };
 
-// export const fetchCompletedTodos = () => ({ type: FETCH_COMPLETED_TODOS });
-export const fetchCompletedTodos = () => async dispatch => {
+export const fetchCompletedTodos = () => async (dispatch) => {
   try {
-    const response = await fetch(`${url}`);
-    const todos = await response.json();
-    const completedTodos = todos.filter(todo => todo.completed);
+    const response = await axios.get(url);
+    const completedTodos = response.data.filter((todo) => todo.completed);
     dispatch({ type: SET_TODOS, todos: completedTodos });
   } catch (error) {
-    console.error("Error fetching completed todos:", error);
+    console.error('Error fetching completed todos:', error);
   }
 };
 
-
-//DarkMode
+// DarkMode action
 export const SET_DARK_MODE = 'SET_DARK_MODE';
 
-export const setDarkMode = isDarkMode => ({ type: SET_DARK_MODE, isDarkMode });
-
-
+export const setDarkMode = (isDarkMode) => ({ type: SET_DARK_MODE, isDarkMode });
